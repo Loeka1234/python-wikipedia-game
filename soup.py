@@ -3,18 +3,22 @@ from typing import Optional
 
 import requests
 from bs4 import BeautifulSoup, element
+import time
 
 
 class Soup:
     source: str
     destination: str
     amount_crawled: int = 0
+    started_time: Optional[float]
 
     def __init__(self, source, destination):
         self.source = requests.get(source).url
         self.destination = requests.get(destination).url
 
     def calculate_clicks(self, amount: int) -> Optional[list[element.Tag]]:
+        self.start_time()
+
         initial_anchors = list(self.get_all_page_anchors(self.get_soup(self.source)))
 
         # First layer
@@ -61,6 +65,9 @@ class Soup:
         sys.stdout.flush()
 
         return founded_route
+
+    def start_time(self):
+        self.started_time = time.time()
 
     def get_all_page_anchors(self, soup):
         for a in soup.find_all('a', href=True):

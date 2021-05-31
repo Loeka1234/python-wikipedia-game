@@ -1,3 +1,6 @@
+import math
+import time
+
 import click
 
 from CSV import CSV
@@ -17,7 +20,9 @@ def calculate_clicks(source, destination, max_clicks, export_csv):
     founded_route = soup.calculate_clicks(int(max_clicks))
 
     if founded_route is not None:
-        print("\r" + source + " --> " + "--> ".join(list(map(lambda a: a.text, founded_route))))
+        if soup.started_time:
+            print("\rFound route in " + str(math.floor(time.time() - soup.started_time)) + " seconds")
+        print(source + " --> " + "--> ".join(list(map(lambda a: a.text, founded_route))))
         if export_csv:
             print("Writing to CSV file...")
             CSV(founded_route).export()
